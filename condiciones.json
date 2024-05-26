@@ -6,10 +6,8 @@
     "insomnio": "Insomnio",
     "obsesiones": "Obsesiones",
     "psicosis": "Psicosis",
-    "trastorno_bipolar": "Trastorno bipolar",
-    "trastorno_de_conducta": "Trastorno de conducta",
-    "trastorno_de_personalidad": "Trastorno de personalidad",
-    "trastorno_disociativo": "Trastorno disociativo",
-    "trastorno_obsesivo_compulsivo": "Trastorno obsesivo compulsivo",
+    "bipolar": "Trastorno bipolar",
+    "td": "Trastorno disociativo",
+    "toc": "TOC",
     "tdah": "TDAH"
 }

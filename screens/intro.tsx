@@ -4,6 +4,10 @@ import AppIntroSlider from "react-native-app-intro-slider";
 import { Button, Chip, Text, TextInput } from "react-native-paper";
 import { MotiImage, MotiScrollView, MotiView } from "moti";
 import condiciones from "./../condiciones.json";
+import Chips from "../components/Chips";
+import { Platform } from "react-native";
+import * as Linking from "expo-linking";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type IntroContextType = {
     canContinue: boolean,
@@ -43,6 +47,7 @@ function Step1({ index }: StepProps) {
 
 function Step2({ index }: StepProps) {
     const { setCanContinue, currentSlide, previousSlide } = useIntroContext();
+    const [selected, setSelected] = useState<string[]>([]);
 
     // TODO: Verify inputs before continuing
     useEffect(() => {
@@ -63,8 +68,8 @@ function Step2({ index }: StepProps) {
                 <TextInput label={"Número de teléfono"} placeholder="¿Cuál es tu número de teléfono?" mode="outlined" style={{ width: "100%" }}></TextInput>
                 <TextInput label={"Contraseña"} placeholder="Crea una contraseña" mode="outlined" style={{ width: "100%" }}></TextInput>
 
-                <View style={{ width: "100%", paddingTop: 30, flex: 1, flexWrap: "wrap", justifyContent: "flex-start", alignItems: "flex-start" }}>
-                    {Object.entries(condiciones).map(([condicionEnum, condicionNombre]) => <Chip key={condicionEnum} showSelectedCheck style={{ width: "auto"}}>{condicionNombre}</Chip>)}
+                <View style={{ width: "100%", paddingTop: 30, paddingBottom: 50, flex: 1, flexWrap: "wrap", justifyContent: "flex-start", alignItems: "flex-start" }}>
+                    <Chips data={condiciones} onSelect={setSelected} selected={selected}></Chips>
                 </View>
             </MotiScrollView>
         </View>
@@ -75,19 +80,25 @@ function Step3({ index }: StepProps) {
     const { setCanContinue } = useIntroContext();
 
     useEffect(() => {
-        setTimeout(() => {
-            setCanContinue(true);
-        }, 1000);
+        setCanContinue(false);
     }, []);
 
     return (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text variant="displayMedium">¡Listo!</Text>
+            <MotiView style={{ flex: 1, justifyContent: "center", alignItems: "center" }} from={{ translateY: 100, scale: 0.85 }} animate={{ translateY: 0, scale: 1 }} transition={{ delay: 500, duration: 500, type: "timing" }}>
+                <MotiImage source={require("./../assets/bcomfylogo.png")} style={{width: "90%", aspectRatio: 1, height: "auto", objectFit: "contain"}} from={{scale: 0.25, opacity: 0}} animate={{scale: 1, opacity: 1}} transition={{ type: "timing", duration: 750 }}></MotiImage>
+                <MotiView from={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1000, delay: 500}}>
+                    <Text style={{ fontSize: 24, textAlign: "center", margin: 16 }}>Conecta tu BComfy</Text>
+                </MotiView>
+                <MotiView from={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 750, delay: 750}}>
+                    <Button icon={"bluetooth"} mode="contained" onPress={() => Linking.openURL(Platform.OS == "android" ? "android.settings.BLUETOOTH_SETTINGS" : "App-Prefs:Bluetooth")}>Configuración Bluetooth</Button>
+                </MotiView>
+            </MotiView>
         </View>
     )
 }
 
-export default function Intro() {
+export default function Intro({ navigation }: { navigation: NativeStackNavigationProp<any> }) {
     const [canContinue, setCanContinue] = useState(false);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [previousSlide, setPreviousSlide] = useState(0);
@@ -108,6 +119,7 @@ export default function Intro() {
                 showSkipButton={false}
                 showNextButton={canContinue}
                 showDoneButton={canContinue}
+                onDone={() => navigation.getParent("main" as any)!.navigate("main")}
                 onSlideChange={(index, lastIndex) => {setCurrentSlide(index); setPreviousSlide(lastIndex)}}
                 renderPrevButton={() => <Button mode="outlined">Atrás</Button>}
                 renderNextButton={() => <Button mode="contained-tonal">Siguiente</Button>}
