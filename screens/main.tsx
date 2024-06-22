@@ -10,7 +10,7 @@ export default function Main() {
     const BottomTabs = createMaterialBottomTabNavigator();
 
     useEffect(() => {
-        SyncStorage.set("completedIntro", true);
+        SyncStorage.set("completedIntro", false);
     }, []);
 
     return (
